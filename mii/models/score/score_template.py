@@ -47,7 +47,7 @@ def run(request):
     response = model.query(query_dict, **request_dict)
 
     if not isinstance(response.response, str):
-        response = [r for r in response.response]
+        response = list(response.response)
     return json.dumps({'responses': response})
 
 

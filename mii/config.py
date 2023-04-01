@@ -54,9 +54,9 @@ class MIIConfig(BaseModel):
     @staticmethod
     def _torch_dtype(value):
         value = value.lower()
-        if value == "float" or value == "fp32":
+        if value in ["float", "fp32"]:
             dtype = torch.float
-        elif value == "half" or value == "fp16":
+        elif value in ["half", "fp16"]:
             dtype = torch.half
         elif value == "int8":
             dtype = torch.int8

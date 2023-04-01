@@ -227,14 +227,12 @@ class MIIServerClient():
 
     #runs task in parallel and return the result from the first task
     async def _query_in_tensor_parallel(self, request_string, query_kwargs):
-        responses = []
-        for i in range(self.num_gpus):
-            responses.append(
-                self.asyncio_loop.create_task(
-                    self._request_async_response(i,
-                                                 request_string,
-                                                 query_kwargs)))
-
+        responses = [
+            self.asyncio_loop.create_task(
+                self._request_async_response(i, request_string, query_kwargs)
+            )
+            for i in range(self.num_gpus)
+        ]
         await responses[0]
 
         return responses[0]
@@ -325,11 +323,10 @@ class MIIServerClient():
         """
         if not self.use_grpc_server:
             response = self._request_response(request_dict, query_kwargs)
-            ret = f"{response}"
+            return f"{response}"
         else:
             assert self.initialize_grpc_client, "grpc client has not been setup when this model was created"
             response = self.asyncio_loop.run_until_complete(
                 self._query_in_tensor_parallel(request_dict,
                                                query_kwargs))
-            ret = response.result()
-        return ret
+            return response.result()

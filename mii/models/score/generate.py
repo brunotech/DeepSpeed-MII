@@ -17,8 +17,7 @@ def create_score_file(deployment_name,
                       ds_config,
                       mii_config,
                       model_path):
-    config_dict = {}
-    config_dict[mii.constants.TASK_NAME_KEY] = mii.utils.get_task_name(task)
+    config_dict = {mii.constants.TASK_NAME_KEY: mii.utils.get_task_name(task)}
     config_dict[mii.constants.MODEL_NAME_KEY] = model_name
     config_dict[mii.constants.ENABLE_DEEPSPEED_KEY] = ds_optimize
     config_dict[mii.constants.MII_CONFIGS_KEY] = mii_config.dict()

@@ -31,7 +31,7 @@ class ModelResponse(modelresponse_pb2_grpc.ModelResponseServicer):
         start = time.time()
 
         # unpack grpc list into py-list
-        request = [r for r in request.request]
+        request = list(request.request)
 
         batched_responses = self.inference_pipeline(request, **query_kwargs)
         end = time.time()
@@ -42,9 +42,9 @@ class ModelResponse(modelresponse_pb2_grpc.ModelResponseServicer):
             text = response[0]['generated_text']
             text_responses.append(text)
 
-        val = modelresponse_pb2.MultiStringReply(response=text_responses,
-                                                 time_taken=end - start)
-        return val
+        return modelresponse_pb2.MultiStringReply(
+            response=text_responses, time_taken=end - start
+        )
 
     def ClassificationReply(self, request, context):
         query_kwargs = self._unpack_proto_query_kwargs(request.query_kwargs)
@@ -105,9 +105,9 @@ def serve(inference_pipeline, port):
         ModelResponse(inference_pipeline),
         server)
     server.add_insecure_port(f'[::]:{port}')
-    print(f"About to start server")
+    print("About to start server")
     server.start()
-    print(f"Started")
+    print("Started")
     server.wait_for_termination()
 
 
